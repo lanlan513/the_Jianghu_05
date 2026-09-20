@@ -1,57 +1,53 @@
-# React + TypeScript + Vite
+# 江湖名剑谱 · 编年史
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+水墨江湖风格的名剑/剑客收藏与横向编年史时间轴。前端 React 18 + TypeScript + Vite + Tailwind，后端 Express 仅提供名剑与剑客的**读取**接口；不使用任何图表库或虚拟列表库。
 
-Currently, two official plugins are available:
+## 运行
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```bash
+npm install
+npm run dev            # 同时起 Vite(5173) 与 API(3002)，/api 已配代理
+# 或分别：npm run client:dev / npm run server:dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+打开 http://localhost:5173/chronicle 即为「江湖编年史」卷轴。
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 编年史能力
 
-export default tseslint.config({
-  extends: [
-    // other configs...
-    // Enable lint rules for React
-    reactX.configs['recommended-typescript'],
-    // Enable lint rules for React DOM
-    reactDom.configs.recommended,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+- 横向卷轴按朝代（上古→清，外加卷末「附卷·无考」）映射年代；名剑=菱形墨符，剑客=朱砂圆圈。
+- 三级缩放粒度：**朝代 / 世纪 / 单件**（按钮、Ctrl/⌘+滚轮），顶栏常驻显示当前粒度；缩放时视口中心年份不变。
+- 朝代之间以渐变墨色带过渡；节点随滚动错落淡入；搜索命中与选中有剑影光晕。
+- **泳道分配 = 区间图着色**，保证任意两节点不重叠且泳道最少。
+- 顶栏搜索名剑/剑客：无结果内联报错；命中自动进入单件粒度、居中并朱砂高亮 2 秒。
+- 点击节点弹卡片（推定年份说明、佩剑断链标注），可跳详情（剑客详情含「佩剑已佚」容错）。
+- 视口中心年份、粒度、压测开关、搜索焦点全部写入 URL（`g/y/t/q`），刷新与分享链接回到同一视图。
+- 「千节点压测」开关把数据**确定性**扩到 2048 条（种子固定，URL 可复现）；顶栏实时显示「实绘节点数」，快速滚动/缩放时常驻 DOM 节点保持常数级、无空白。
+- 移动端不接管触摸，交给原生 `pan-x/pan-y` 滚动，避免横向拖拽与页面滚动冲突；桌面端支持鼠标拖拽。
+
+## 纯函数模块（src/chronicle/）
+
+| 文件 | 职责 |
+| --- | --- |
+| `eras.ts` | 朝代表：政治纪年区间（可重叠）与尺度域（不重叠）、别名归一、`eraAtYear` |
+| `scale.ts` | 分段线性尺度 `yearToX`/`xToYear`（二分逆映射，互为逆函数）、刻度、墨色带几何 |
+| `lanes.ts` | 区间图着色 `assignLanes`、`buildLaneLayout`（按泳道分桶并按 left 排序） |
+| `viewport.ts` | `visibleNodes` 每泳道二分下界 + `makeViewWindow`，不全量过滤 |
+| `entries.ts` | 接口数据归并、缺失/矛盾朝代的可解释兜底、断链标注、确定性压测生成、搜索匹配 |
+| `urlState.ts` | 视图状态 URL 解析/序列化（非法值回退默认） |
+| `useEntranceEngine.ts` | 单一 rAF 循环，入场与光晕只写 DOM ref；回调 ref 随节点挂载/卸载注册/注销 |
+
+## 兜底映射的可解释性
+
+- 精确年份优先；有 `yearNote` 视为据史事推定（卡片显示说明）。
+- 上古/夏商等无精确纪年：取朝代尺度域中段的确定性锚点，并在卡片注明依据（如道历元年、断代工程约数）。
+- 朝代字段缺失或无法识别（如「年代失考」、空串）：列入卷末「附卷·无考」，按录入次序均匀定位。
+- 朝代与年份矛盾（如「漢」+208）：以年份为准归入「三国」尺度域，卡片注明原因。
+- 纪年区间重叠（汉末/三国、两晋/三国、隋唐之际）：政治区间保留重叠用于说明，尺度域在建立年取整切分，保证 `年份→x` 严格单调。
+- 剑客佩剑 id 在名剑谱中查无对应：节点与卡片标注「佩剑已佚」，不抛错。
+
+## 自检脚本（无测试框架，tsx 直跑）
+
+```bash
+npx tsx scripts/verify-chronicle.ts   # 逆映射互逆、泳道零重叠、二分==全量、兜底、压测确定性
+npx tsx scripts/ssr-smoke.ts          # 三种 URL 下组件树 renderToString 不抛错
 ```

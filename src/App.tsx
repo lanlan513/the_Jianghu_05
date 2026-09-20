@@ -5,6 +5,8 @@ import Home from "@/pages/Home";
 import SwordList from "@/pages/SwordList";
 import SwordDetail from "@/pages/SwordDetail";
 import SwordsmanList from "@/pages/SwordsmanList";
+import SwordsmanDetail from "@/pages/SwordsmanDetail";
+import ChroniclePage from "@/pages/ChroniclePage";
 import SectList from "@/pages/SectList";
 
 export default function App() {
@@ -15,9 +17,11 @@ export default function App() {
         <main className="flex-1">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/chronicle" element={<ChroniclePage />} />
             <Route path="/swords" element={<SwordList />} />
             <Route path="/swords/:id" element={<SwordDetail />} />
             <Route path="/swordsmen" element={<SwordsmanList />} />
+            <Route path="/swordsmen/:id" element={<SwordsmanDetail />} />
             <Route path="/sects" element={<SectList />} />
           </Routes>
         </main>

@@ -9,6 +9,15 @@ export interface Sword {
   history: string;
   legend: string;
   imageUrl: string;
+  /**
+   * 精确年份（公元纪年，负数表示公元前）。
+   * 缺失时由前端年代学纯函数按朝代兜底映射。
+   */
+  year?: number;
+  /** 有年份区间时的结束年份（如铸剑跨度数年、传说流传区间） */
+  yearEnd?: number;
+  /** 兜底说明：当年份为推断值时，向用户解释映射依据 */
+  yearNote?: string;
   attributes: {
     sharpness: number;
     hardness: number;
@@ -27,7 +36,12 @@ export interface Swordsman {
   sect: string;
   biography: string;
   avatarUrl: string;
+  /** 佩剑 id 列表，引用 Sword.id；可能指向不存在的名剑（需容错） */
   swords: string[];
+  /** 精确年份（公元纪年，负数表示公元前），可缺失 */
+  year?: number;
+  yearEnd?: number;
+  yearNote?: string;
   createdAt: string;
 }
 

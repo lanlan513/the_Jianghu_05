@@ -1,0 +1,10 @@
+{
+  "name": "jianghu-chronicle",
+  "version": "1.0.0",
+  "description": "江湖编年史 —— 名剑与剑客的卷轴式横向时间轴",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/"
+  }
+}

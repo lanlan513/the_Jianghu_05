@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>江湖编年史 · 名剑与剑客时间轴</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<header id="topbar">
+  <div class="brand"><span class="seal">江湖</span><h1>编年史</h1><span class="sub">名剑与剑客</span></div>
+  <form id="searchForm" role="search">
+    <input id="search" type="search" placeholder="搜名剑 / 剑客，如：湛卢、荆轲" autocomplete="off">
+    <button type="submit">寻剑</button>
+  </form>
+  <div class="hud">
+    <span id="granularity" class="pill" title="当前粒度">朝代</span>
+    <button id="zoomOut" class="hbtn" title="缩小（-）">−</button>
+    <button id="zoomIn" class="hbtn" title="放大（+）">＋</button>
+    <button id="stressBtn" class="hbtn" title="把数据复制到上千条做压力测试">压测</button>
+  </div>
+</header>
+
+<main id="stage">
+  <div id="bands"></div>
+  <div id="ruler"></div>
+  <div id="chips"></div>
+  <div id="nodes"></div>
+  <div id="card"></div>
+  <div id="toast"></div>
+  <div id="stats"></div>
+  <div class="hint">拖拽平移 · Ctrl/⌘+滚轮缩放 · 双击放大 · 点击节点查看</div>
+</main>
+
+<div id="detail"></div>
+
+<script type="module" src="/js/main.js"></script>
+</body>
+</html>
